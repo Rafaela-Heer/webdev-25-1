@@ -1,27 +1,40 @@
 import { Icon } from "@iconify/react/dist/iconify.js"
 import TaskListItem from "./TaskListItem"
 import { useState } from "react"
+import AddTaskBox from "./AddTaskBox";
 
 export default function TaskList() {
     const [ tasks, setTasks ] = useState([ "Uma tarefa legal", "Ir na feira", "Estudar React", "Programar mais" ])
 
-    function addTask() {
-        console.log("addTask");
-        setTasks([...tasks, "Alguma coisa"])
+    function addTask(taskName) {
+        console.log("addTask",taskName);
+        setTasks([...tasks, taskName])
+    }
+
+    function onClickRemove (idx) {
+        console.log("onClickRemove",idx)
+        tasks.splice(idx,1)
+        setTasks([...tasks])
     }
 
     return (
         <>
-            <div className="border border-black p-2 m-2 rounded md:w-120">
+            <AddTaskBox onAddTaskName={addTask}/>
+            <div className="border-2px border-blue-400 p-2 m-2 rounded md:w-120">
                 <div>
                     Lista de tarefas: 
-                    <button onClick={addTask} className="border border-black px-2">
-                        Add
-                    </button>
                 </div>
                 <hr className="my-2" />
+                {tasks.length == 0 &&
+                    <div className="bg-gray-300 p-1 text-lg rounded">
+                        <div className="flex items-center gap-2">
+                            <icon icon="mdi:info" className="text-4x1 text-red-600"/>
+                            Nenhuma tarefa foi adicionada!
+                        </div>
+                    </div>
+                }
                 <div>
-                    { tasks.map((elem,idx) => <TaskListItem key={idx} taskName={elem} />) }
+                    { tasks.map((elem,idx) => <TaskListItem onRemove={onClickRemove} key={idx} taskName={elem} idx={idx} ultimo={idx == tasks.length-1} />) }
                 </div>
             </div>
         </>
